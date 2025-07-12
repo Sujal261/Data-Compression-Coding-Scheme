@@ -1,9 +1,8 @@
 #include<iostream>
 #include<string>
 using namespace std ; 
-string dictionary[100];
-
 string Encoder(string word){
+    string dictionary[100];
     string ans;
     bool check = false;
     int i =0;
@@ -65,24 +64,45 @@ string Encoder(string word){
         }
     }
     ans = ans + to_string(k);
+    int q=0;
+    for(string ch: dictionary){
+        if(ch==""){
+            break;
+        }
+        cout<<"|"<<ch<<"|"<<q<<"|"<<endl;
+        q=q+1;
+        
+    }
    
     return ans;
 }
-    
-
-string Decoder(string word){
+string Decoder(string word, string out){
+    string dictionary[100];
     string output;
-    dictionary[0] ='B';
-    dictionary[1]='A';
     bool check = false;
-    int j =2;
-    string c = string(1,word[0]);
+    string ans;
+    int j =0;
+    for (char ch : word) {
+    bool already_in = false;
+    string ch_str(1, ch);
+    for (int i = 0; i < j; i++) {
+        if (dictionary[i] == ch_str) {
+            already_in = true;
+            break;
+        }
+    }
+    if (!already_in) {
+        dictionary[j] = ch_str;
+        j++;
+    }
+}
+    string c = string(1,out[0]);
    
     output = dictionary[stoi(c)];
-    for (int i =1 ; i<word.length();i++){
+    for (int i =1 ; i<out.length();i++){
         string s = dictionary[stoi(c)];
       
-        c = string(1,word[i]);
+        c = string(1,out[i]);
         
         for(int k =0; k<j;k++){
             if(s==dictionary[k]){
@@ -103,12 +123,18 @@ string Decoder(string word){
             }
 
     }
+    int q=0;
+    for(string ch: dictionary){
+        if(ch==""){
+            break;
+        }
+        cout<<"|"<<ch<<"|"<<q<<"|"<<endl;
+        q=q+1;
+        
+    }
    
  return output;
 }
-
-
- 
 int main(){
     string word;
     string output;
@@ -118,9 +144,7 @@ int main(){
     cin>>word;
     output = Encoder(word);
     cout<<output<<endl;
-    decoded= Decoder(output);
+    decoded= Decoder(word, output);
     cout<<decoded<<endl;
-    
-
-
 }
+
