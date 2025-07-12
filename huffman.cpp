@@ -1,5 +1,6 @@
 #include<iostream>
 #include<string>
+#include<climits>
 struct node
 {
     std::string data;
@@ -10,7 +11,6 @@ struct node
         data = value;
         next = nullptr;
         freq=0;
-
     }
 };
 node* head = nullptr;
@@ -28,6 +28,17 @@ void calculatefrequency(std::string sequence){
     }
     
 }
+}
+
+void calculatesmallestfrequency(){
+    int smallestfrequency = INT_MAX;
+    node* temp = head;
+    while(temp!=head){
+        if(temp->freq<smallestfrequency){
+            smallestfrequency = temp->freq;
+        }
+
+    }
 }
 void seefrequency(){
     node* temp = head;
@@ -89,7 +100,6 @@ int main(){
     std::string encoded_sequence;
     std::cout<<"Enter the sequence you want to encode"<<std::flush;
     std::cin>>input;
-    // std::flush;
     encoded_sequence = HuffmanEncoding(input);
     std::cout<<encoded_sequence<<std::endl;
     calculatefrequency(input);

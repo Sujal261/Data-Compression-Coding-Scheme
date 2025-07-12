@@ -141,7 +141,8 @@ int main(){
     string decoded;
 
     cout<<"Enter the string: ";
-    cin>>word;
+    std::getline(std::cin, word);
+
     output = Encoder(word);
     cout<<output<<endl;
     decoded= Decoder(word, output);
