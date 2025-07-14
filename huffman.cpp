@@ -6,14 +6,20 @@ struct node
     std::string data;
     int freq;
     node* next;
+    node* left;
+    node* right;
+    bool calc;
 
     node(std::string value){
         data = value;
         next = nullptr;
         freq=0;
+        calc = false;
+        
     }
 };
 node* head = nullptr;
+
 
 void calculatefrequency(std::string sequence){
     
