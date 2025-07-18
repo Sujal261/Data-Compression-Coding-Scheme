@@ -1,10 +1,12 @@
 #include<iostream>
 #include<string>
 #include<climits>
+#include<vector>
+#include<algorithm>
 struct node
 {
     std::string data;
-    int freq;
+    int freq=0;
     node* next;
     node* left;
     node* right;
@@ -18,96 +20,116 @@ struct node
         
     }
 };
-node* head = nullptr;
+class Huffman{
+    private:
+        std::vector<node*> nodes;
+        node* head = nullptr;
+        std::string answer;
+    public:
 
-
-void calculatefrequency(std::string sequence){
-    
-    for(char ch: sequence){
-    node* temp = head;
-    while(temp!=nullptr){
-        if(temp->data == std::string(1,ch)){
-            temp->freq = temp->freq+1;
-            
-        }
-        temp = temp->next;
-    }
-    
-}
-}
-
-void calculatesmallestfrequency(){
-    int smallestfrequency = INT_MAX;
-    node* temp = head;
-    while(temp!=head){
-        if(temp->freq<smallestfrequency){
-            smallestfrequency = temp->freq;
+        void sort_vector_array(std::vector<node*> &nodes){
+            sort(nodes.begin(), nodes.end(),[](node* a, node* b){
+                return a->freq<b->freq;
+            });
         }
 
-    }
-}
-void seefrequency(){
-    node* temp = head;
-    while(temp!= nullptr)
-    {
-        std::cout<<temp->data<<"-"<<temp->freq<<std::endl;
-        temp = temp->next;
-    }
-  
-}
+        void generatehuffmancodes(node* root, std::string code){
+            if(!root) return;
+            if(root->left==nullptr && root->right==nullptr){
+                std::cout<<root->data<<":"<<code<<std::endl;
+                return;
+            }
+            generatehuffmancodes(root->left, code+"0");
+            generatehuffmancodes(root->right, code+"1");
+        }
 
 
-std::string HuffmanEncoding(std::string input){
-    
-    std::string answer;
-  
-    answer +=input[0];
-    // std::cout<<node1.data[0]<<std::endl;;
-    int j=1;
-    for(int k =1;k<input.length();k++){
-        bool check = false;
-    for(int i =0;i<j;i++){
-        // std::cout<<node1.data<<std::endl;
-        if(input[k]==answer[i]){
-         check = true;
-         break;
+        node* HuffmanEncoding(std::string input){
+            std::string answer;
+            answer +=input[0];
+            int j=1;
+            for(int k =1;k<input.length();k++){
+                bool check = false;
+            for(int i =0;i<j;i++){
+                if(input[k]==answer[i]){
+                check = true;
+                break;
+                }
+            }
+            if(!check){
+                answer= answer+ input[k];
+                j=j+1; 
+            }
         }
-    }
-    if(!check){
-        answer= answer+ input[k];
-        j=j+1; 
-    }
-}
-int p =0;
-    for(char c : answer){
-        node* newNode = new node(std::string(1,c));
-        if(p==0){
-          head = newNode;
-        
-        }
-        else{
+        int p =0;
+            for(char c : answer){
+                node* newNode = new node(std::string(1,c));
+                if(p==0){
+                head = newNode;
+                
+                }
+                else{
+                    node* temp = head;
+                    while(temp->next!=nullptr){
+                        temp = temp->next;
+                    }
+                    temp->next = newNode;
+                
+                
+                }
+                p=p+1;
+
+            }
+            for(char ch: input){
             node* temp = head;
-            while(temp->next!=nullptr){
+            while(temp!=nullptr){
+                if(temp->data == std::string(1,ch)){
+                    temp->freq = temp->freq+1;
+                    
+                }
+                temp = temp->next;
+            } 
+        }
+        node* temp = head;
+            while(temp!=nullptr){
+                nodes.push_back(temp);
                 temp = temp->next;
             }
-            temp->next = newNode;
-          
-        
-        }
-        p=p+1;
 
-    }
-    return answer;
-}
+        sort_vector_array(nodes);
+        
+        while(nodes.size()>1){
+                node* left = nodes[0];
+                node* right = nodes[1];
+                node* newNode = new node(left->data +right->data);
+                newNode->freq = left->freq+right->freq;
+                newNode->left = left;
+                newNode->right = right;
+                
+                nodes.erase(nodes.begin());
+                nodes.erase(nodes.begin());
+                nodes.push_back(newNode);
+                sort_vector_array(nodes);
+                std::cout << "Nodes frequencies: ";
+        for (auto n : nodes) {
+            std::cout << n->freq << " ";
+        }
+        std::cout << std::endl;
+
+        }
+        node* root = nodes[0];
+        return root;
+        }
+};
 
 
 int main(){
+    Huffman h;
+    node* root;
     std::string input;
     std::string encoded_sequence;
     std::cout<<"Enter the sequence you want to encode"<<std::flush;
     std::cin>>input;
-    encoded_sequence = HuffmanEncoding(input);
-    std::cout<<encoded_sequence<<std::endl;
-    calculatefrequency(input);
-    seefrequency();
+    root = h.HuffmanEncoding(input);
+    h.generatehuffmancodes(root, "");
 }
